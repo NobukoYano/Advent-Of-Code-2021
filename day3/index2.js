@@ -1,30 +1,40 @@
-const scoreMap = [
-    ["A", "X", 3], // loose with Z: 3 + 0
-    ["A", "Y", 4], // draw  with X: 1 + 3
-    ["A", "Z", 8], // win   with Y: 2 + 6
-    ["B", "X", 1], // loose with X: 1 + 0
-    ["B", "Y", 5], // draw  with Y: 2 + 3
-    ["B", "Z", 9], // win   with Z: 3 + 6 
-    ["C", "X", 2], // loose with Y: 2 + 0
-    ["C", "Y", 6], // draw  with Z: 3 + 3
-    ["C", "Z", 7], // win   with X: 1 + 6
-]
-// X: loose, Y: draw, Z: win
 /**
- * day X - first
- * @param {Array<string>} inputs
- * @return {number}
+ * filter the array according to the position to be determined and the rule
+ * @param {Array<string>} array
+ * @param {number} position
+ * @param {"oxigen" | "co2"} rule
+ * @param {number} maxPosition
+ * @return {String}
  */
-const task2 = (inputs) => {
-    let score = 0
-    for (const input of inputs) {
-        score += scoreMap.find((score) => score[0] === input[0] && score[1] === input[2])[2];
-    }
-    return score;
+const customFilter = (array, position, rule, maxPosition) => {
+    if (array.length === 1) return array[0];
+    if (position > maxPosition) return "ERR";
+
+    const sum = array.reduce((acc,current)=>acc + parseInt(current[position]), 0);
+    const result = rule === "oxigen" ? (sum >= array.length/2) : !(sum >= array.length/2);
+    const resultBit = result ? "1" : "0";
+    return customFilter(array.filter((element)=>element[position] === resultBit), position+1, rule);
 };
 
+/**
+ * day 3 - second
+ * @param {Array<number>} inputs
+ */
+const calculate = (inputs) => {
+
+    // Calculate oxigen and co2
+    const oxigen = customFilter(inputs, 0, "oxigen", inputs[0].length);
+    const co2 = customFilter(inputs, 0, "co2", inputs[0].length);
+
+    console.log("####", oxigen, co2);
+
+    if (oxigen === "ERR" || co2 === "ERR") return -1
+    return parseInt(oxigen, 2) * parseInt(co2, 2);
+};
+
+
 const fs = require("fs");
-const file = fs.readFileSync("./day2/input.txt").toString('utf-8');
+const file = fs.readFileSync("./day3/input.txt").toString('utf-8');
 const input = file.split("\n")
 
-console.log(task2(input));
+console.log(calculate(input));

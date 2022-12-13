@@ -1,27 +1,22 @@
 /**
- * day X - first
- * @param {Array<string>} inputs
+ * day 1 - first
+ * @param {Array<number>} texts
  * @return {number}
  */
-const findMostCaloriesElf = (inputs) => {
-    let max = 0;
-    let localSum = 0;
-    for (const calory of inputs) {
-        const caloryNum = parseInt(calory, 0);
-        if (!caloryNum) {
-            if (localSum > max) {
-                max = localSum;
-            }
-            localSum = 0;
-        } else {
-            localSum += caloryNum
+const calculate = (texts) => {
+    // Check the number of items which are bigger than previous value
+    let lastNumber = null;
+    return texts.reduce((count, current, i)=>{
+        if (i !== 0 && lastNumber < parseInt(current)) {
+            count++;
         }
-    }
-    return max;
+        lastNumber = parseInt(current);
+        return count;
+    }, 0)
 };
 
 const fs = require("fs");
 const file = fs.readFileSync("./day1/input.txt").toString('utf-8');
-const input = file.split("\n")
+const textArray = file.split("\n")
 
-console.log(findMostCaloriesElf(input));
+console.log(calculate(textArray));

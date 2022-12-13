@@ -1,30 +1,34 @@
-const scoreMap = [
-    ["A", "X", 3], // loose with Z: 3 + 0
-    ["A", "Y", 4], // draw  with X: 1 + 3
-    ["A", "Z", 8], // win   with Y: 2 + 6
-    ["B", "X", 1], // loose with X: 1 + 0
-    ["B", "Y", 5], // draw  with Y: 2 + 3
-    ["B", "Z", 9], // win   with Z: 3 + 6 
-    ["C", "X", 2], // loose with Y: 2 + 0
-    ["C", "Y", 6], // draw  with Z: 3 + 3
-    ["C", "Z", 7], // win   with X: 1 + 6
-]
-// X: loose, Y: draw, Z: win
 /**
- * day X - first
+ * day 2 - second
  * @param {Array<string>} inputs
  * @return {number}
  */
-const task2 = (inputs) => {
-    let score = 0
-    for (const input of inputs) {
-        score += scoreMap.find((score) => score[0] === input[0] && score[1] === input[2])[2];
-    }
-    return score;
+const calculate = (inputs) => {
+    // calculate horizontal and depth
+    let aim = 0;
+    const position = inputs.reduce((acc, item)=>{
+        const [direction, number] = item.split(" ");
+        if (direction === "forward") {
+            acc.horizontal = acc.horizontal + parseInt(number);
+            acc.depth = acc.depth + aim * parseInt(number);
+        }
+        if (direction === "down") {
+            aim = aim + parseInt(number);
+        }
+
+        if (direction === "up") {
+            aim = aim - parseInt(number);
+        }
+        return acc;
+
+    }, {horizontal: 0, depth: 0});
+    console.log("### position", position);
+    return position.horizontal * position.depth;
+
 };
 
 const fs = require("fs");
 const file = fs.readFileSync("./day2/input.txt").toString('utf-8');
 const input = file.split("\n")
 
-console.log(task2(input));
+console.log(calculate(input));

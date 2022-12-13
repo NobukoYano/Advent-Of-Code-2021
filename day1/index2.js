@@ -1,26 +1,28 @@
 /**
- * day X - second
- * @param {Array<string>} inputs
+ * day2 - second
+ * @param {Array<number>} texts
  * @return {number}
  */
-const findTopThreeCaloriesElf = (inputs) => {
-    let max = [];
-    let localSum = 0;
-    for (const calory of inputs) {
-        const caloryNum = parseInt(calory, 0);
-        if (!caloryNum) {
-            max.push(localSum);
-            localSum = 0;
-        } else {
-            localSum += caloryNum
-        }
+const calculate = (texts) => {
+    // create array of sum
+    const sumArray = [];
+    for (let i = 2; i < texts.length; i++) {
+        sumArray.push(parseInt(texts[i-2])+parseInt(texts[i-1])+parseInt(texts[i]));
     }
-    max.push(localSum);
-    return max.sort((a, b)=> a - b).slice(-3).reduce((acc, curr)=> acc+curr, 0);
+
+    // Check the number of items which are bigger than previous value
+    let previous = null;
+    return sumArray.reduce((count, current, i)=>{
+        if (i !== 0 && previous < parseInt(current)) {
+            count++;
+        }
+        previous = parseInt(current);
+        return count;
+    }, 0)
 };
 
 const fs = require("fs");
 const file = fs.readFileSync("./day1/input.txt").toString('utf-8');
-const input = file.split("\n")
+const textArray = file.split("\n")
 
-console.log(findTopThreeCaloriesElf(input));
+console.log(calculate(textArray));

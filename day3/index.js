@@ -1,37 +1,32 @@
 /**
- * day X - first
- * @param {Array<string>} inputs
+ * day 3 - first
+ * @param {Array<string>} inputs - each element has a same length of string and consists of "0" or "1"
  * @return {number}
  */
-const task1 = (inputs) => {
-    const duplicates = [];
-    for (const input of inputs) {
-        const first = input.substring(0, input.length/2);
-        const second = input.substring(input.length/2);
-        duplicates.push(findCommonChar(first, second));
-    }
-    return duplicates.reduce((acc, curr)=> acc + getPriority(curr), 0);
-};
-
-const findCommonChar = (a, b) => {
-    for (const char of a) {
-        if (b.indexOf(char) !== -1) {
-            return char
+const calculate = (inputs) => {
+    // Calculate sum of each position
+    const sum = Array(inputs[0].length).fill(0);
+    for (let el of inputs) {
+        for (let i = 0; i < el.length; i++) {
+            sum[i] = sum[i] + parseInt(el[i]);
         }
     }
-}
+    console.log("#### sum", sum);
 
-const getPriority = (char) => {
-    const temp = char.charCodeAt() - 64;
-    if (temp > 27) {
-        return temp - 32;
-    } else {
-        return temp + 26;
-    }
+    // Convert to the bit numbers
+    const result = sum.map((sumElement)=>sumElement < inputs.length/2 ? "0" : "1");
+    console.log("#### result", result);
 
-}
+    // Calculate gamma and epsilon
+    const gamma = parseInt(result.join(""), 2);
+    const epsilon = parseInt(result.map((el)=>el === "0" ? "1" : "0").join(""), 2);
+    console.log("####", gamma * epsilon);
+
+    return gamma * epsilon;
+};
+
 const fs = require("fs");
 const file = fs.readFileSync("./day3/input.txt").toString('utf-8');
 const input = file.split("\n")
 
-console.log(task1(input));
+console.log(calculate(input));
